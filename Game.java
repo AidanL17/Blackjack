@@ -1,9 +1,18 @@
 
 public class Game {
+	
+	boolean cards[][] = new boolean[4][13];
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		new Game();
+	}
+	
+	public Game() {
+		
+	}
+	
+	public void Deal() {
+		
 	}
 
 }

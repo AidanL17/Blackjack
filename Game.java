@@ -96,6 +96,14 @@ public class Game implements ActionListener {
 		if (event.getSource().equals(hit)) {
 			Deal();
 		}
+		if (event.getSource().equals(allIn)) {
+			bet += bank;
+			bank = 0;
+			System.out.println(bet);
+			System.out.println(bank);
+			fund.setText("Your kid's college fund: $" + bank);
+			currentBet.setText("Your bet: $" + bet);
+		}
 	}
 	
 	public void Shuffle() {

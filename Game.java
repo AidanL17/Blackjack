@@ -24,11 +24,7 @@ public class Game implements ActionListener {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		for (int x = 0; x < 13; x++) {
-			for (int y = 0; y < 4; y++) {
-				cards[x][y] = true;
-			}
-		}
+		Shuffle();
 	}
 	
 	public void Deal() {
@@ -51,6 +47,14 @@ public class Game implements ActionListener {
 		// TODO Auto-generated method stub
 		if (event.getSource().equals(dealTest)) {
 			Deal();
+		}
+	}
+	
+	public void Shuffle() {
+		for (int x = 0; x < 13; x++) {
+			for (int y = 0; y < 4; y++) {
+				cards[x][y] = true;
+			}
 		}
 	}
 

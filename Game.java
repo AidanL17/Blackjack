@@ -24,7 +24,7 @@ public class Game implements ActionListener {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		for (int x = 0; x < 3; x++) {
+		for (int x = 0; x < 4; x++) {
 			for (int y = 0; y < 13; y++) {
 				cards[x][y] = true;
 			}
@@ -33,7 +33,7 @@ public class Game implements ActionListener {
 	
 	public void Deal() {
 		ArrayList<Integer> deck = new ArrayList<Integer>();
-		for (int x = 0; x < 3; x++) {
+		for (int x = 0; x < 4; x++) {
 			for (int y = 0; y < 13; y++) {
 				if (cards[x][y] == true) {
 					deck.add(x*10+y);

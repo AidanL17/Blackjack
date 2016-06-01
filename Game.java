@@ -10,7 +10,7 @@ public class Game implements ActionListener {
 	
 	JFrame frame = new JFrame("Blackjack");
 	JButton dealTest = new JButton("Pick a card, any card");
-	boolean cards[][] = new boolean[4][13];
+	boolean cards[][] = new boolean[13][4];
 
 	public static void main(String[] args) {
 		new Game();
@@ -24,8 +24,8 @@ public class Game implements ActionListener {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		for (int x = 0; x < 4; x++) {
-			for (int y = 0; y < 13; y++) {
+		for (int x = 0; x < 13; x++) {
+			for (int y = 0; y < 4; y++) {
 				cards[x][y] = true;
 			}
 		}
@@ -33,8 +33,8 @@ public class Game implements ActionListener {
 	
 	public void Deal() {
 		ArrayList<Integer> deck = new ArrayList<Integer>();
-		for (int x = 0; x < 4; x++) {
-			for (int y = 0; y < 13; y++) {
+		for (int x = 0; x < 13; x++) {
+			for (int y = 0; y < 4; y++) {
 				if (cards[x][y] == true) {
 					deck.add(x*10+y);
 				}

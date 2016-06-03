@@ -13,13 +13,20 @@ public class Game implements ActionListener {
 	
 	JFrame frame = new JFrame("Blackjack");
 	JButton hit = new JButton("Hit");
+	JButton dealerHand[][] = new JButton[1][11];
+	JButton userHand[][] = new JButton[1][11];
 	boolean cards[][] = new boolean[13][4];
 	int bank = 100;
 	int bet = 0;
+	final int DEALER = 0;
+	final int USER = 1;
 	final int PLUS = 1;
 	final int MINUS = 0;
 	Container west = new Container();
 	Container east = new Container();
+	Container north = new Container();
+	Container south = new Container();
+	//Container center = new Container();
 	Container betChange = new Container();
 	JButton doubleDown = new JButton("Double Down");
 	JButton surrender = new JButton("Surrender");
@@ -43,6 +50,7 @@ public class Game implements ActionListener {
 		frame.setLayout(new BorderLayout());
 		west.setLayout(new GridLayout(4,1));
 		east.setLayout(new GridLayout(4,1));
+		south.setLayout(new GridLayout(1,11));
 		betChange.setLayout(new GridLayout(3,2));
 		betChange.add(plusTen);
 		betChange.add(minusTen);
@@ -58,6 +66,10 @@ public class Game implements ActionListener {
 		west.add(doubleDown);
 		west.add(surrender);
 		west.add(stand);
+		/* for (int i = 0; i < 11; i++) {
+				userHand[1][i] = new JButton("");
+				south.add(userHand[1][i]);
+		} */
 		hit.addActionListener(this);
 		doubleDown.addActionListener(this);
 		surrender.addActionListener(this);
@@ -69,6 +81,7 @@ public class Game implements ActionListener {
 		plusOne.addActionListener(this);
 		minusOne.addActionListener(this);
 		allIn.addActionListener(this);
+		frame.add(south, BorderLayout.SOUTH);
 		frame.add(west, BorderLayout.WEST);
 		frame.add(east, BorderLayout.EAST);
 		
@@ -77,7 +90,7 @@ public class Game implements ActionListener {
 		shuffle();
 	}
 	
-	public void deal() {
+	public void deal(int player) {
 		ArrayList<Integer> deck = new ArrayList<Integer>();
 		for (int x = 0; x < 13; x++) {
 			for (int y = 0; y < 4; y++) {
@@ -90,13 +103,22 @@ public class Game implements ActionListener {
         cards[deck.get(choice) / 10][deck.get(choice) % 10] = false;
         System.out.println((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
         System.out.println("test");
+        if (player == USER) {
+        	for (int i = 0; i < 11; i++) {
+				if (userHand[1][i].isEnabled()) {
+					userHand[1][i].setText((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
+					userHand[1][i].setEnabled(false);
+					return;
+				}
+			}
+        }
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		// TODO Auto-generated method stub
 		if (event.getSource().equals(hit)) {
-			deal();
+			deal(USER);
 		}
 		if (event.getSource().equals(allIn)) {
 			bet += bank;

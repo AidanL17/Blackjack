@@ -16,6 +16,8 @@ public class Game implements ActionListener {
 	boolean cards[][] = new boolean[13][4];
 	int bank = 100;
 	int bet = 0;
+	final int PLUS = 1;
+	final int MINUS = 0;
 	Container west = new Container();
 	Container east = new Container();
 	Container betChange = new Container();
@@ -72,10 +74,10 @@ public class Game implements ActionListener {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		Shuffle();
+		shuffle();
 	}
 	
-	public void Deal() {
+	public void deal() {
 		ArrayList<Integer> deck = new ArrayList<Integer>();
 		for (int x = 0; x < 13; x++) {
 			for (int y = 0; y < 4; y++) {
@@ -94,7 +96,7 @@ public class Game implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		// TODO Auto-generated method stub
 		if (event.getSource().equals(hit)) {
-			Deal();
+			deal();
 		}
 		if (event.getSource().equals(allIn)) {
 			bet += bank;
@@ -104,14 +106,51 @@ public class Game implements ActionListener {
 			fund.setText("Your kid's college fund: $" + bank);
 			currentBet.setText("Your bet: $" + bet);
 		}
+		if (event.getSource().equals(plusTen)) {
+			changeBetAmount(10, PLUS);
+		}
+		if (event.getSource().equals(minusTen)) {
+			changeBetAmount(-10, MINUS);
+		}
+		if (event.getSource().equals(plusFive)) {
+			changeBetAmount(5, PLUS);
+		}
+		if (event.getSource().equals(minusFive)) {
+			changeBetAmount(-5, MINUS);
+		}
+		if (event.getSource().equals(plusOne)) {
+			changeBetAmount(1, PLUS);
+		}
+		if (event.getSource().equals(minusOne)) {
+			changeBetAmount(-1, MINUS);
+		}
 	}
 	
-	public void Shuffle() {
+	public void shuffle() {
 		for (int x = 0; x < 13; x++) {
 			for (int y = 0; y < 4; y++) {
 				cards[x][y] = true;
 			}
 		}
+	}
+	
+	public void changeBetAmount(int changeBy, int plusOrMinus) {
+		if (plusOrMinus == PLUS) {
+			if (bank >= changeBy) {
+				bet += changeBy;
+				bank -= changeBy;
+			}
+		}
+		if (plusOrMinus == MINUS) {
+			if (bet >= -changeBy) {
+				bet += changeBy;
+				bank -= changeBy;
+			}
+		}
+		System.out.println(bet);
+		System.out.println(bank);
+		fund.setText("Your kid's college fund: $" + bank);
+		currentBet.setText("Your bet: $" + bet);
 	}
 
 }

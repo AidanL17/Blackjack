@@ -115,9 +115,9 @@ public class Game implements ActionListener {
         System.out.println("test");
         if (player == USER) {
         	for (int i = 0; i < 11; i++) {
-				if (userHand[1][i].isEnabled()) {
-					userHand[1][i].setText((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
-					userHand[1][i].setEnabled(false);
+				if (userHand[0][i].isEnabled()) {
+					userHand[0][i].setText((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
+					userHand[0][i].setEnabled(false);
 					return;
 				}
 			}

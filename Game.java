@@ -156,7 +156,10 @@ public class Game implements ActionListener {
 					userHand[0][i].setEnabled(false);
 					if ((deck.get(choice) / 10) == 0) {
 						playerAces++;
-						playerScore += 11;
+						if (playerAces < 1) {
+							playerScore += 10;
+						}
+						playerScore +=1;
 					}
 					if ((deck.get(choice) / 10) < 9 && (deck.get(choice) / 10) > 0) {
 						playerScore += (deck.get(choice) / 10 + 1);
@@ -164,6 +167,15 @@ public class Game implements ActionListener {
 					if ((deck.get(choice) / 10) > 8) {
 						playerScore += 10;
 					}
+					if (playerScore > 21) {
+						if (playerAces > 0) {
+							playerScore -= 10;
+						}
+						if (playerScore > 21) {
+							playerBust = true;
+						}
+					}
+					System.out.println(playerScore);
 					return;
 				}
 			}

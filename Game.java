@@ -24,9 +24,9 @@ public class Game implements ActionListener {
 	final int MINUS = 0;
 	Container west = new Container();
 	Container east = new Container();
-	Container north = new Container();
-	Container south = new Container();
-	//Container center = new Container();
+	Container dealerCards = new Container();
+	Container playerCards = new Container();
+	Container center = new Container();
 	Container betChange = new Container();
 	JButton doubleDown = new JButton("Double Down");
 	JButton surrender = new JButton("Surrender");
@@ -40,6 +40,7 @@ public class Game implements ActionListener {
 	JButton minusOne = new JButton("- $1");
 	JTextArea fund = new JTextArea("Your kid's college fund: $" + bank);
 	JTextArea currentBet = new JTextArea("Your bet: $" + bet);
+	JTextArea handResult = new JTextArea("This is where it says what you've won or lost.");
 
 	public static void main(String[] args) {
 		new Game();
@@ -50,8 +51,10 @@ public class Game implements ActionListener {
 		frame.setLayout(new BorderLayout());
 		west.setLayout(new GridLayout(4,1));
 		east.setLayout(new GridLayout(4,1));
-		south.setLayout(new GridLayout(1,11));
+		playerCards.setLayout(new GridLayout(1,11));
+		dealerCards.setLayout(new GridLayout(1,11));
 		betChange.setLayout(new GridLayout(3,2));
+		center.setLayout(new GridLayout(3,1));
 		betChange.add(plusTen);
 		betChange.add(minusTen);
 		betChange.add(plusFive);
@@ -66,10 +69,17 @@ public class Game implements ActionListener {
 		west.add(doubleDown);
 		west.add(surrender);
 		west.add(stand);
-		/* for (int i = 0; i < 11; i++) {
-				userHand[1][i] = new JButton("");
-				south.add(userHand[1][i]);
-		} */
+		for (int i = 0; i < 11; i++) {
+				userHand[0][i] = new JButton("");
+				playerCards.add(userHand[0][i]);
+		}
+		for (int i = 0; i < 11; i++) {
+			dealerHand[0][i] = new JButton("");
+			dealerCards.add(dealerHand[0][i]);
+		}
+		center.add(dealerCards);
+		center.add(handResult);
+		center.add(playerCards);
 		hit.addActionListener(this);
 		doubleDown.addActionListener(this);
 		surrender.addActionListener(this);
@@ -81,7 +91,7 @@ public class Game implements ActionListener {
 		plusOne.addActionListener(this);
 		minusOne.addActionListener(this);
 		allIn.addActionListener(this);
-		frame.add(south, BorderLayout.SOUTH);
+		frame.add(center, BorderLayout.CENTER);
 		frame.add(west, BorderLayout.WEST);
 		frame.add(east, BorderLayout.EAST);
 		

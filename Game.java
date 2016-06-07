@@ -70,12 +70,10 @@ public class Game implements ActionListener {
 		west.add(surrender);
 		west.add(stand);
 		for (int i = 0; i < 11; i++) {
-				userHand[0][i] = new JButton("");
-				playerCards.add(userHand[0][i]);
+			userHand[0][i] = new JButton("");
 		}
 		for (int i = 0; i < 11; i++) {
 			dealerHand[0][i] = new JButton("");
-			dealerCards.add(dealerHand[0][i]);
 		}
 		center.add(dealerCards);
 		center.add(handResult);
@@ -116,8 +114,19 @@ public class Game implements ActionListener {
         if (player == USER) {
         	for (int i = 0; i < 11; i++) {
 				if (userHand[0][i].isEnabled()) {
+					playerCards.add(userHand[0][i]);
 					userHand[0][i].setText((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
 					userHand[0][i].setEnabled(false);
+					return;
+				}
+			}
+        }
+        if (player == DEALER) {
+        	for (int i = 0; i < 11; i++) {
+				if (dealerHand[0][i].isEnabled()) {
+					dealerCards.add(dealerHand[0][i]);
+					dealerHand[0][i].setText((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
+					dealerHand[0][i].setEnabled(false);
 					return;
 				}
 			}

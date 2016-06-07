@@ -16,12 +16,18 @@ public class Game implements ActionListener {
 	JButton dealerHand[][] = new JButton[1][11];
 	JButton userHand[][] = new JButton[1][11];
 	boolean cards[][] = new boolean[13][4];
+	boolean dealerBust = false;
+	boolean playerBust = false;
 	int bank = 100;
 	int bet = 0;
 	final int DEALER = 0;
 	final int USER = 1;
 	final int PLUS = 1;
 	final int MINUS = 0;
+	int dealerScore = 0;
+	int playerScore = 0;
+	int dealerAces = 0;
+	int playerAces = 0;
 	Container west = new Container();
 	Container east = new Container();
 	Container dealerCards = new Container();
@@ -111,12 +117,53 @@ public class Game implements ActionListener {
         cards[deck.get(choice) / 10][deck.get(choice) % 10] = false;
         System.out.println((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
         System.out.println("test");
+        String face = "";
+        if ((deck.get(choice) / 10) == 0) {
+			face = "ace";
+		}
+		if ((deck.get(choice) / 10) < 10 && (deck.get(choice) / 10) > 0) {
+			face += (deck.get(choice) / 10 + 1);
+		}
+		if ((deck.get(choice) / 10) == 10) {
+			face = "jack";
+		}
+		if ((deck.get(choice) / 10) == 11) {
+			face = "queen";
+		}
+		if ((deck.get(choice) / 10) == 12) {
+			face = "king";
+		}
+        String suit = "";
+        if ((deck.get(choice) % 10) == 0) {
+        	suit = "_of_spades";
+        }
+        if ((deck.get(choice) % 10) == 1) {
+        	suit = "_of_diamonds";
+        }
+        if ((deck.get(choice) % 10) == 2) {
+        	suit = "_of_clubs";
+        }
+        if ((deck.get(choice) % 10) == 3) {
+        	suit = "_of_hearts";
+        }
+        String cardName = face + suit + ".png";
+        System.out.println(cardName);
         if (player == USER) {
         	for (int i = 0; i < 11; i++) {
 				if (userHand[0][i].isEnabled()) {
 					playerCards.add(userHand[0][i]);
 					userHand[0][i].setText((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
 					userHand[0][i].setEnabled(false);
+					if ((deck.get(choice) / 10) == 0) {
+						playerAces++;
+						playerScore += 11;
+					}
+					if ((deck.get(choice) / 10) < 9 && (deck.get(choice) / 10) > 0) {
+						playerScore += (deck.get(choice) / 10 + 1);
+					}
+					if ((deck.get(choice) / 10) > 8) {
+						playerScore += 10;
+					}
 					return;
 				}
 			}

@@ -16,15 +16,20 @@ public class Game implements ActionListener {
 	JButton dealerHand[][] = new JButton[1][11];
 	JButton userHand[][] = new JButton[1][11];
 	boolean cards[][] = new boolean[13][4];
-	boolean dealerBust = false;
-	boolean playerBust = false;
 	int bank = 100;
 	int bet = 0;
-	int won = 0;
+	int winnings = 0;
 	final int DEALER = 0;
 	final int USER = 1;
 	final int PLUS = 1;
 	final int MINUS = 0;
+	final int LOSS = 0;
+	final int WIN = 1;
+	final int TIE = 2;
+	final int SURRENDER = 3;
+	final int BLACKJACK = 4;
+	int playerHandSize = 0;
+	int dealerHandSize = 0;
 	int dealerScore = 0;
 	int playerScore = 0;
 	int dealerAces = 0;
@@ -81,9 +86,11 @@ public class Game implements ActionListener {
 		west.add(stand);
 		for (int i = 0; i < 11; i++) {
 			userHand[0][i] = new JButton("");
+			userHand[0][i].setEnabled(false);
 		}
 		for (int i = 0; i < 11; i++) {
 			dealerHand[0][i] = new JButton("");
+			dealerHand[0][i].setEnabled(false);
 		}
 		center.add(dealerCards);
 		center.add(nextHand);
@@ -107,8 +114,8 @@ public class Game implements ActionListener {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		//shuffle();
-		handOver();
+		handOver(LOSS);
+		handResult.setText("Welcome to Blackjack");
 	}
 	
 	public void deal(int player) {
@@ -122,8 +129,6 @@ public class Game implements ActionListener {
 		}
 		int choice = (int)(Math.random() * deck.size());
         cards[deck.get(choice) / 10][deck.get(choice) % 10] = false;
-        System.out.println((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
-        System.out.println("test");
         String face = "";
         if ((deck.get(choice) / 10) == 0) {
 			face = "ace";
@@ -157,16 +162,17 @@ public class Game implements ActionListener {
         System.out.println(cardName);
         if (player == USER) {
         	for (int i = 0; i < 11; i++) {
-				if (userHand[0][i].isEnabled()) {
+				if (userHand[0][i].isEnabled() == false) {
 					playerCards.add(userHand[0][i]);
 					userHand[0][i].setText((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
-					userHand[0][i].setEnabled(false);
+					userHand[0][i].setEnabled(true);
+					playerHandSize++;
 					if ((deck.get(choice) / 10) == 0) {
-						playerAces++;
-						if (playerAces < 1) {
+						if (playerAces == 0) {
 							playerScore += 10;
 						}
-						playerScore +=1;
+						playerAces++;
+						playerScore += 1;
 					}
 					if ((deck.get(choice) / 10) < 9 && (deck.get(choice) / 10) > 0) {
 						playerScore += (deck.get(choice) / 10 + 1);
@@ -176,29 +182,31 @@ public class Game implements ActionListener {
 					}
 					if (playerScore > 21) {
 						if (playerAces > 0) {
+							playerAces = -3;
 							playerScore -= 10;
 						}
 						if (playerScore > 21) {
-							playerBust = true;
+							handOver(LOSS);
 						}
 					}
-					System.out.println(playerScore);
+					System.out.println("P " + playerScore);
 					return;
 				}
 			}
         }
         if (player == DEALER) {
         	for (int i = 0; i < 11; i++) {
-				if (dealerHand[0][i].isEnabled()) {
+				if (dealerHand[0][i].isEnabled() == false) {
 					dealerCards.add(dealerHand[0][i]);
 					dealerHand[0][i].setText((deck.get(choice) / 10) + "," + (deck.get(choice) % 10));
-					dealerHand[0][i].setEnabled(false);
+					dealerHand[0][i].setEnabled(true);
+					dealerHandSize++;
 					if ((deck.get(choice) / 10) == 0) {
-						dealerAces++;
-						if (dealerAces < 1) {
+						if (dealerAces == 0) {
 							dealerScore += 10;
 						}
-						dealerScore +=1;
+						dealerAces++;
+						dealerScore += 1;
 					}
 					if ((deck.get(choice) / 10) < 9 && (deck.get(choice) / 10) > 0) {
 						dealerScore += (deck.get(choice) / 10 + 1);
@@ -208,13 +216,20 @@ public class Game implements ActionListener {
 					}
 					if (dealerScore > 21) {
 						if (dealerAces > 0) {
+							dealerAces = -3;
 							dealerScore -= 10;
 						}
 						if (dealerScore > 21) {
-							dealerBust = true;
+							if (playerHandSize == 2 && playerScore == 21) {
+								handOver(BLACKJACK);
+							}
+							else {
+								handOver(WIN);
+							}
+							
 						}
 					}
-					System.out.println(dealerScore);
+					System.out.println("D " + dealerScore);
 					return;
 				}
 			}
@@ -227,6 +242,9 @@ public class Game implements ActionListener {
 		if (event.getSource().equals(hit)) {
 			deal(USER);
 			surrender.setEnabled(false);
+		}
+		if (event.getSource().equals(surrender)) {
+			handOver(SURRENDER);
 		}
 		if (event.getSource().equals(allIn)) {
 			bet += bank;
@@ -242,6 +260,7 @@ public class Game implements ActionListener {
 			bet += bet;
 			fund.setText("Your kid's college fund: $" + bank);
 			currentBet.setText("Your bet: $" + bet);
+			doubleDown.setEnabled(false);
 			hit.setEnabled(false);
 			surrender.setEnabled(false);
 		}
@@ -264,22 +283,34 @@ public class Game implements ActionListener {
 			changeBetAmount(-1, MINUS);
 		}
 		if (event.getSource().equals(next)) {
+			nextHand.remove(next);
 			handStart();
+		}
+		if (event.getSource().equals(stand)) {
+			while (dealerScore < 17) {
+				deal(DEALER);
+			}
 		}
 	}
 	
 	public void handStart() {
-		nextHand.remove(next);
+		handResult.setText("");
 		for (int i = 0; i < 11; i++) {
 			dealerCards.remove(dealerHand[0][i]);
 			dealerHand[0][i].setText("");
-			dealerHand[0][i].setEnabled(true);
+			dealerHand[0][i].setEnabled(false);
 		}
 		for (int i = 0; i < 11; i++) {
 			playerCards.remove(userHand[0][i]);
 			userHand[0][i].setText("");
-			userHand[0][i].setEnabled(true);
+			userHand[0][i].setEnabled(false);
 		}
+		playerAces = 0;
+		dealerAces = 0;
+		playerHandSize = 0;
+		dealerHandSize = 0;
+		playerScore = 0;
+		dealerScore = 0;
 		shuffle();
 		deal(USER);
 		deal(USER);
@@ -301,13 +332,28 @@ public class Game implements ActionListener {
 		}
 	}
 	
-	public void handOver() {
+	public void handOver(int result) {
 		nextHand.add(next);
 		hit.setEnabled(false);
 		stand.setEnabled(false);
 		doubleDown.setEnabled(false);
 		surrender.setEnabled(false);
-		bank += won;
+		if (result == LOSS) {
+			winnings = 0;
+		}
+		if (result == WIN) {
+			winnings = 2 * bet;
+		}
+		if (result == TIE) {
+			winnings = bet;
+		}
+		if (result == SURRENDER) {
+			winnings = bet / 2;
+		}
+		if (result == BLACKJACK) {
+			winnings = 5/2 * bet;
+		}
+		bank += winnings;
 		bet = 0;
 		allIn.setEnabled(true);
 		plusTen.setEnabled(true);
@@ -316,6 +362,8 @@ public class Game implements ActionListener {
 		minusTen.setEnabled(true);
 		minusFive.setEnabled(true);
 		minusOne.setEnabled(true);
+		fund.setText("Your kid's college fund: $" + bank);
+		currentBet.setText("Your bet: $" + bet);
 	}
 	
 	public void shuffle() {
